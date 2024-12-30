@@ -9,9 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -39,5 +37,29 @@ public class BasicItemController {
         itemRepository.save(new Item("트래비스스캇", 20000, 10));
         itemRepository.save(new Item("준지마원", 20000, 10));
     }
+
+    @GetMapping("/{itemId}")
+    public String item(@PathVariable("itemId") Long itemId, Model model){
+        Item item = itemRepository.findById(itemId);
+        model.addAttribute("item", item);
+        return "basic/item";
+    }
+
+    @GetMapping("/add")
+    public String addForm(){
+        return "basic/addForm";
+    }
+
+    @PostMapping("/add")
+    public String addItemV1(@RequestParam("itemName") String itemName,
+                            @RequestParam("price") Integer price,
+                            @RequestParam("quantity") Integer quantity,
+                            Model model){
+
+        Item item = itemRepository.save(new Item(itemName, price, quantity));
+        model.addAttribute("item", item);
+        return "basic/item";
+    }
+
 
 }
