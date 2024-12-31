@@ -50,17 +50,39 @@ public class BasicItemController {
         return "basic/addForm";
     }
 
+//    @PostMapping("/add")
+//    public String addItemV1(@RequestParam("itemName") String itemName,
+//                            @RequestParam("price") int price,
+//                            @RequestParam("quantity") Integer quantity,
+//                            Model model){
+//        Item item = new Item(itemName, price, quantity);
+//        itemRepository.save(item);
+//
+//        model.addAttribute("item", item);
+//
+//        return "basic/item";
+//    }
+
     @PostMapping("/add")
-    public String addItemV1(@RequestParam("itemName") String itemName,
-                            @RequestParam("price") int price,
-                            @RequestParam("quantity") Integer quantity,
-                            Model model){
-        Item item = new Item(itemName, price, quantity);
+    public String addItemV2(@ModelAttribute("item") Item item){
         itemRepository.save(item);
-
-        model.addAttribute("item", item);
-
+        //model.addAttribute("item", item);
         return "basic/item";
+    }
+
+    @GetMapping("/{itemId}/edit")
+    public String editForm(@PathVariable("itemId") Long itemId, Model model){
+        Item item = itemRepository.findById(itemId);
+        model.addAttribute("item", item);
+        return "basic/editForm";
+    }
+
+    @PostMapping("/{itemId}/edit")
+    public String editItem(@PathVariable("itemId") Long itemId, @ModelAttribute("item") Item item){
+        itemRepository.update(itemId, item);
+
+        return "redirect:/basic/items/{itemId}";
+
     }
 
 
